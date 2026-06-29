@@ -8,7 +8,6 @@ export function useUsers() {
   const [error, setError] = useState(null);
   const [toast, setToast] = useState(null);
 
-  // Search, Filter, Sort, Pagination State
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCriteria, setFilterCriteria] = useState({
     firstName: '',
@@ -28,7 +27,6 @@ export function useUsers() {
     setToast(null);
   }, []);
 
-  // Fetch initial users list
   const loadUsers = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -59,12 +57,10 @@ export function useUsers() {
     loadUsers();
   }, [loadUsers]);
 
-  // Reset to page 1 whenever filters, search, or page size change
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, filterCriteria, pageSize]);
 
-  // Add User action
   const addUser = async (formData) => {
     try {
       const payload = {
@@ -75,7 +71,6 @@ export function useUsers() {
 
       const response = await userService.createUser(payload);
 
-      // Prevent duplicate IDs when multiple items are added to JSONPlaceholder mock
       const existingIds = new Set(users.map((u) => Number(u.id)));
       let newId = response.id || Date.now();
       while (existingIds.has(Number(newId))) {
@@ -100,7 +95,6 @@ export function useUsers() {
     }
   };
 
-  // Edit User action
   const updateUser = async (id, formData) => {
     try {
       const payload = {
@@ -110,11 +104,9 @@ export function useUsers() {
         company: { name: formData.department }
       };
 
-      // Call API (will succeed with 200 for IDs 1-10 on JSONPlaceholder)
       try {
         await userService.updateUser(id, payload);
       } catch (apiErr) {
-        // If it's a locally added user (e.g. ID > 10), JSONPlaceholder might 404, but we still handle locally
         console.warn('Backend update simulation note:', apiErr.message);
       }
 
@@ -136,7 +128,6 @@ export function useUsers() {
     }
   };
 
-  // Delete User action
   const deleteUser = async (id) => {
     try {
       const targetUser = users.find((u) => u.id === id);
@@ -157,7 +148,6 @@ export function useUsers() {
     }
   };
 
-  // Handle Sort Toggle
   const handleSort = (key) => {
     setSortConfig((prev) => {
       if (prev.key === key) {
@@ -167,7 +157,6 @@ export function useUsers() {
     });
   };
 
-  // Reset Filters
   const resetFilters = () => {
     setFilterCriteria({
       firstName: '',
@@ -178,11 +167,9 @@ export function useUsers() {
     setSearchQuery('');
   };
 
-  // Compute Filtered and Sorted list
   const filteredAndSortedUsers = useMemo(() => {
     return users
       .filter((user) => {
-        // Global search check (matches first name, last name, or email)
         if (searchQuery.trim()) {
           const q = searchQuery.toLowerCase().trim();
           const matchesFirst = user.firstName.toLowerCase().includes(q);
@@ -191,7 +178,6 @@ export function useUsers() {
           if (!matchesFirst && !matchesLast && !matchesEmail) return false;
         }
 
-        // Specific filter criteria checks
         if (filterCriteria.firstName && !user.firstName.toLowerCase().includes(filterCriteria.firstName.toLowerCase().trim())) {
           return false;
         }
@@ -221,7 +207,6 @@ export function useUsers() {
       });
   }, [users, searchQuery, filterCriteria, sortConfig]);
 
-  // Compute Paginated list
   const totalItems = filteredAndSortedUsers.length;
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
   const validCurrentPage = Math.min(currentPage, totalPages);

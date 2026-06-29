@@ -1,14 +1,8 @@
 import { DEPARTMENTS } from './constants';
 
-/**
- * Splits a full name into firstName and lastName.
- * e.g., "Leanne Graham" => { firstName: "Leanne", lastName: "Graham" }
- * e.g., "Mrs. Dennis Schulist" => { firstName: "Dennis", lastName: "Schulist" }
- */
 export function parseUserName(fullName = "") {
   if (!fullName) return { firstName: "", lastName: "" };
 
-  // Remove common titles like Mr., Mrs., Dr. if present for cleaner display
   const cleanedName = fullName.replace(/^(Mr\.|Mrs\.|Ms\.|Dr\.|Prof\.)\s+/i, "").trim();
   const nameParts = cleanedName.split(" ").filter(Boolean);
 
@@ -25,14 +19,9 @@ export function parseUserName(fullName = "") {
   };
 }
 
-/**
- * Assigns a deterministic department based on user properties or company name,
- * ensuring consistent mapping across re-renders.
- */
 export function assignDepartment(user) {
   if (user.department) return user.department;
 
-  // Derive from company name if available
   const companyName = user.company?.name || "";
   if (companyName.toLowerCase().includes("group") || companyName.toLowerCase().includes("tech")) {
     return "Engineering";
@@ -41,7 +30,6 @@ export function assignDepartment(user) {
     return "Sales";
   }
 
-  // Fallback to deterministic modulo selection based on user ID
   const idNum = Number(user.id) || 0;
   return DEPARTMENTS[idNum % DEPARTMENTS.length];
 }

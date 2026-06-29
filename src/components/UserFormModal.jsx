@@ -38,7 +38,6 @@ export function UserFormModal({ isOpen, onClose, onSubmit, initialData }) {
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    // Clear field-specific error on change
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: null }));
     }

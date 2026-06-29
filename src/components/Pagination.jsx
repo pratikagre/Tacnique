@@ -15,7 +15,6 @@ export function Pagination({
   const startItem = (currentPage - 1) * pageSize + 1;
   const endItem = Math.min(currentPage * pageSize, totalItems);
 
-  // Generate sequence of page numbers to display
   const getPageNumbers = () => {
     const pages = [];
     const maxVisiblePages = 5;

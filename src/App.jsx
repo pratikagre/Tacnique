@@ -39,13 +39,11 @@ export default function App() {
     refetch
   } = useUsers();
 
-  // Modals visibility states
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [deletingUser, setDeletingUser] = useState(null);
 
-  // Check if any specific field filter is active
   const isFilterActive = Boolean(
     filterCriteria.firstName ||
       filterCriteria.lastName ||
